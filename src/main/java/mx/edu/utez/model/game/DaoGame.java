@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import mx.edu.utez.service.ConnectionMySQL;
 
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -84,13 +85,12 @@ public class DaoGame {
         return game;
     }
     //Crear nuevo juego
-    public boolean create(BeanGame game){
+    public boolean create(BeanGame game, InputStream image){
         boolean flag = false;
         try{
             con = ConnectionMySQL.getConnection();
             cstm = con.prepareCall("{call sp_create(?,?,?,?,?)}");
-            cstm.setString(1, game.getNameGame());
-            cstm.setString(2, game.getImg_game());
+            cstm.setBlob(2, image);
             cstm.setInt(3, game.getCategory_idCategory());
             cstm.setString(4, game.getDate_premiere());
             cstm.setInt(5, game.getStatus());
@@ -109,11 +109,13 @@ public class DaoGame {
         try{
             con = ConnectionMySQL.getConnection();
             cstm = con.prepareCall("{call sp_update(?,?,?,?,?)}");
-            cstm.setString(1, game.getNameGame());
-            cstm.setString(2, game.getImg_game());
-            cstm.setInt(3, game.getCategory_idCategory());
-            cstm.setString(4, game.getDate_premiere());
-            cstm.setInt(5, game.getStatus());
+            cstm.setInt(1, game.getIdGame());
+            cstm.setString(2, game.getNameGame());
+            //pendiente
+            cstm.setString(3, game.getImg_game());
+            cstm.setInt(4, game.getCategory_idCategory());
+            cstm.setString(5, game.getDate_premiere());
+            cstm.setInt(6, game.getStatus());
 
             flag = cstm.execute();
         }catch(SQLException e){
