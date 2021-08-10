@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ServletAsync_3D.iml" filepath="$PROJECT_DIR$/ServletAsync_3D.iml" />
+      <module fileurl="file://$PROJECT_DIR$/servletAsync_3D.iml" filepath="$PROJECT_DIR$/servletAsync_3D.iml" />
     </modules>
   </component>
 </project>

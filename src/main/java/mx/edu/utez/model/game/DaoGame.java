@@ -1,121 +1,86 @@
 package mx.edu.utez.model.game;
 
 import mx.edu.utez.model.category.BeanCategory;
+import mx.edu.utez.service.ConnectionMySQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import mx.edu.utez.service.ConnectionMySQL;
 
 import java.io.InputStream;
-import java.sql.*;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-
 
 public class DaoGame {
     private Connection con;
     private CallableStatement cstm;
     private ResultSet rs;
     final private Logger CONSOLE = LoggerFactory.getLogger(DaoGame.class);
-    //Visualizar todos los registros
+
     public List<BeanGame> findAll(){
-        List<BeanGame> listGame = new ArrayList<>();
-        try {
+        List<BeanGame> listGames = new ArrayList<>();
+        try{
             con = ConnectionMySQL.getConnection();
-            cstm = con.prepareCall("{call sp_findGames}");
+            cstm = con.prepareCall("select nameGame, img_game, date_premiere, status from game;");
             rs = cstm.executeQuery();
 
             while(rs.next()){
-                BeanCategory category = new BeanCategory();
-                BeanGame game = new BeanGame();
+                BeanCategory beanCategory = new BeanCategory();
+                BeanGame beanGame = new BeanGame();
 
-                category.setIdCategory(rs.getInt("idCategory"));
-                category.setNameCategory(rs.getString("nameCategory"));
-                category.setStatus(rs.getInt("status"));
+                beanGame.setNameGame(rs.getString("nameGame"));
+                beanGame.setImgGame(Base64.getEncoder().encodeToString(rs.getBytes("imgGame")));
+                beanGame.setDatePremiere(rs.getString("datePremiere"));
+                beanGame.setStatus(rs.getInt("status"));
 
-                game.setIdGame(rs.getInt("idGame"));
-                game.setNameGame(rs.getString("nameGame"));
-                //byte [] bytesImg = rs.getBytes("imgGames");
-                game.setImg_game(Base64.getEncoder().encodeToString(rs.getBytes("imgGame")));
-                game.setCategory_idCategory(category);
-                game.setDate_premiere(rs.getString("date_premiere"));
-                game.getStatus(rs.getInt("status"));
 
-                listGame.add(game);
+                listGames.add(beanGame);
             }
-        }catch (SQLException e){
-            CONSOLE.error("Ha ocurrido un error: " + e.getMessage());
-        } finally {
+        }catch(SQLException e){
+            CONSOLE.error("Ha ocurrido algún error: " + e.getMessage());
+        }finally{
             ConnectionMySQL.closeConnections(con, cstm, rs);
         }
-        return listGame;
+        return listGames;
     }
-    //Consultar por ID
-    public BeanGame findById(long id){
-        BeanGame game = null;
+
+    public BeanGame findById(int id){
+        BeanGame beanGame = new BeanGame();
+        return beanGame;
+    }
+
+    public boolean create(BeanGame beanGame, InputStream image){
         try {
             con = ConnectionMySQL.getConnection();
-            //Procedimiento almacenado (SELECT pendiente)
-            cstm = con.prepareCall("SELECT * FROM game AS G INNER JOIN category AS C where G.Category_idCategory = ?;");
-            cstm.setLong(1, id);
-            rs = cstm.executeQuery();
+            cstm = con.prepareCall("{call sp_createGame(?,?,?,?)}");
 
-            if(rs.next()){
-                BeanCategory category = new BeanCategory();
-                game = new BeanGame();
+            cstm.setString(1, beanGame.getNameGame());
+            cstm.setString(2, beanGame.getDatePremiere());
+            cstm.setBlob(3, image);
+            cstm.setInt(4,beanGame.getStatus());
 
-                category.setIdCategory(rs.getInt("idCategory"));
-                category.setNameCategory(rs.getString("nameCategory"));
-                category.setStatus(rs.getInt("status"));
-
-
-                game.setIdGame(rs.getInt("idGame"));
-                game.setNameGame(rs.getString("nameGame"));
-                //byte [] bytesImg = rs.getBytes("imgGames");
-                game.setImg_game(Base64.getEncoder().encodeToString(rs.getBytes("imgGame")));
-                game.setCategory_idCategory(category);
-                game.setDate_premiere(rs.getString("date_premiere"));
-                game.getStatus(rs.getInt("status"));
-            }
-        }catch (SQLException e){
-            CONSOLE.error("Ha ocurrido un error: " + e.getMessage());
-        } finally {
-            ConnectionMySQL.closeConnections(con, cstm, rs);
-        }
-        return game;
-    }
-    //Crear nuevo juego
-    public boolean create(BeanGame game, InputStream image){
-        boolean flag = false;
-        try{
-            con = ConnectionMySQL.getConnection();
-            cstm = con.prepareCall("{call sp_create(?,?,?,?,?)}");
-            cstm.setBlob(2, image);
-            cstm.setInt(3, game.getCategory_idCategory());
-            cstm.setString(4, game.getDate_premiere());
-            cstm.setInt(5, game.getStatus());
-            cstm.execute();
-            flag = true;
         }catch(SQLException e){
-            CONSOLE.error("Ha ocurrido un error: " + e.getMessage());
-        } finally {
-            ConnectionMySQL.closeConnections(con, cstm);
+
         }
-        return flag;
+        return true;
     }
-    //Actualizar juego
-    public boolean update(BeanGame game){
+
+    public boolean update(BeanGame beanGame){
         boolean flag = false;
         try{
+            BeanCategory beanCategory = new BeanCategory();
             con = ConnectionMySQL.getConnection();
             cstm = con.prepareCall("{call sp_update(?,?,?,?,?)}");
-            cstm.setInt(1, game.getIdGame());
-            cstm.setString(2, game.getNameGame());
+            cstm.setInt(1, beanGame.getIdGame());
+            cstm.setString(2, beanGame.getNameGame());
             //pendiente
-            cstm.setString(3, game.getImg_game());
-            cstm.setInt(4, game.getCategory_idCategory());
-            cstm.setString(5, game.getDate_premiere());
-            cstm.setInt(6, game.getStatus());
+            cstm.setString(3, beanGame.getImgGame());
+            cstm.setInt(4,beanCategory.getIdCategory());
+            cstm.setString(5, beanGame.getDatePremiere());
+            cstm.setInt(6, beanGame.getStatus());
 
             flag = cstm.execute();
         }catch(SQLException e){
@@ -126,19 +91,7 @@ public class DaoGame {
         return flag;
     }
 
-    public boolean delete(long idGame){
-        boolean flag = false;
-        try{
-            con = ConnectionMySQL.getConnection();
-            cstm = con.prepareCall("{call sp_delete(?)}");
-            cstm.setLong(1, idGame);
-
-            flag = cstm.execute();
-        }catch(SQLException e){
-            CONSOLE.error("Ha ocurrido un error: " + e.getMessage());
-        }finally{
-            ConnectionMySQL.closeConnections(con, cstm);
-        }
-        return flag;
+    public boolean delete(int id){
+        return true;
     }
 }

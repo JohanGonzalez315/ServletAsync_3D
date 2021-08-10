@@ -6,11 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="ServletAsync_3D" />
+        <module name="servletAsync_3D" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="ServletAsync_3D" target="1.8" />
+      <module name="servletAsync_3D" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

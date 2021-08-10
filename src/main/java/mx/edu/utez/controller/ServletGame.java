@@ -20,19 +20,21 @@ import java.util.Map;
 public class ServletGame extends HttpServlet {
     private Map map = new HashMap();
     final private Logger CONSOLE = LoggerFactory.getLogger(ServletGame.class);
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        map.put("listGames", new DaoGame().findAll());
+        write(response, map);
+        /*
         HttpSession session = request.getSession();
-        if (session.getAttribute("session")!=null){
-           // request.setAttribute("listGames", new DaoGame().findAll());
-           // request.getRequestDispatcher("views/game/games.jsp").forward(request, response);
-            map.put("listGames",new DaoGame().findAll());
-            write(response, map);
-        }else {
+        if(session.getAttribute("session") != null){
+            //request.setAttribute("listGames", new DaoGame().findAll());
+            //request.getRequestDispatcher("views/game/games.jsp").forward(request, response);
+
+        } else {
             request.getRequestDispatcher("/").forward(request, response);
         }
-
-
+        */
     }
 
     @Override
@@ -41,9 +43,10 @@ public class ServletGame extends HttpServlet {
         String action = request.getParameter("action");
 
         BeanGame beanGame = new BeanGame();
-        DaoGame daoGame = new DaoGame();
         BeanCategory beanCategory = new BeanCategory();
-        switch (action) {
+        DaoGame daoGame = new DaoGame();
+
+        switch (action){
             case "create":
                 Part part = request.getPart("image");
                 InputStream image = part.getInputStream();
@@ -51,40 +54,36 @@ public class ServletGame extends HttpServlet {
                 beanCategory.setIdCategory(Integer.parseInt(request.getParameter("idCategory")));
 
                 beanGame.setNameGame(request.getParameter("name"));
-                beanGame.setDate_premiere(request.getParameter("date"));
+                beanGame.setDatePremiere(request.getParameter("date"));
                 beanGame.setCategory_idCategory(beanCategory);
 
                 boolean flag = daoGame.create(beanGame, image);
-                if (flag){
+                if(flag){
                     map.put("message", "Se ha registrado correctamente");
-
-                }else{
+                } else {
                     map.put("message", "No se registró correctamente");
                 }
                 write(response, map);
                 break;
             case "update":
-
                 beanCategory.setIdCategory(Integer.parseInt(request.getParameter("idCategory")));
 
                 beanGame.setIdGame(Integer.parseInt("idGame"));
                 beanGame.setNameGame(request.getParameter("name"));
-                beanGame.setDate_premiere(request.getParameter("date"));
+                beanGame.setDatePremiere(request.getParameter("date"));
                 beanGame.setCategory_idCategory(beanCategory);
 
                 boolean flag1 = daoGame.update(beanGame);
-                if (flag1){
+                if(flag1){
                     CONSOLE.error("Se ha actualizado correctamente");
-                }else{
+                } else {
                     CONSOLE.error("No se actualizó correctamente");
                 }
                 break;
-
             case "delete":
-                if (new DaoGame().delete(Integer.parseInt(request.getParameter("idGame")))){
+                if(new DaoGame().delete(Integer.parseInt(request.getParameter("idGame")))){
                     //true
-
-                }else {
+                } else {
                     //false
                 }
                 break;
@@ -92,12 +91,12 @@ public class ServletGame extends HttpServlet {
                 request.getRequestDispatcher("/").forward(request, response);
                 break;
         }
-        response.sendRedirect(request.getContextPath()+"/readGames");
+        response.sendRedirect(request.getContextPath() + "/readGames");
 
     }
-    private void write(HttpServletResponse response, Map<String, String> map) throws IOException{
+
+    private void write(HttpServletResponse response, Map<String, Object> map) throws IOException{
         response.setContentType("application/json");
         response.getWriter().write(new Gson().toJson(map));
-
     }
 }

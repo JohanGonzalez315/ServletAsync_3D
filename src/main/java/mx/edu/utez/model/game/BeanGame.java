@@ -5,20 +5,20 @@ import mx.edu.utez.model.category.BeanCategory;
 public class BeanGame {
     private int idGame;
     private String nameGame;
-    private String img_game;
+    private String imgGame;
     private BeanCategory Category_idCategory;
-    private String date_premiere;
+    private String datePremiere;
     private int status;
 
     public BeanGame() {
     }
 
-    public BeanGame(int idGame, String nameGame, String img_game, BeanCategory category_idCategory, String date_premiere, int status) {
+    public BeanGame(int idGame, String nameGame, String imgGame, BeanCategory category_idCategory, String datePremiere, int status) {
         this.idGame = idGame;
         this.nameGame = nameGame;
-        this.img_game = img_game;
+        this.imgGame = imgGame;
         Category_idCategory = category_idCategory;
-        this.date_premiere = date_premiere;
+        this.datePremiere = datePremiere;
         this.status = status;
     }
 
@@ -38,39 +38,35 @@ public class BeanGame {
         this.nameGame = nameGame;
     }
 
-    public String getImg_game() {
-        return img_game;
+    public String getImgGame() {
+        return imgGame;
     }
 
-    public void setImg_game(String img_game) {
-        this.img_game = img_game;
+    public void setImgGame(String imgGame) {
+        this.imgGame = imgGame;
     }
 
-    public int getCategory_idCategory() {
-        return 0;
+    public BeanCategory getCategory_idCategory() {
+        return Category_idCategory;
     }
 
     public void setCategory_idCategory(BeanCategory category_idCategory) {
         Category_idCategory = category_idCategory;
     }
 
-    public String getDate_premiere() {
-        return date_premiere;
+    public String getDatePremiere() {
+        return datePremiere;
     }
 
-    public void setDate_premiere(String date_premiere) {
-        this.date_premiere = date_premiere;
+    public void setDatePremiere(String datePremiere) {
+        this.datePremiere = datePremiere;
     }
 
-    public int getStatus(int status) {
-        return this.status;
+    public int getStatus() {
+        return status;
     }
 
     public void setStatus(int status) {
         this.status = status;
-    }
-
-    public int getStatus() {
-        return 0;
     }
 }

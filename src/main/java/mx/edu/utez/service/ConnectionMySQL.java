@@ -24,6 +24,7 @@ public class ConnectionMySQL {
 
         }catch(SQLException e){ }
     }
+
     public static void closeConnections(Connection con, CallableStatement cstm){
         try{
             if(cstm != null){ cstm.close(); }

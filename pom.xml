@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>mx.edu.utez</groupId>
-    <artifactId>ServletAsync_3D</artifactId>
+    <artifactId>servletAsync_3D</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>ServletAsync_3D</name>
+    <name>servletAsync_3D</name>
     <packaging>war</packaging>
 
     <properties>
@@ -43,6 +43,11 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <version>1.7.30</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
             <version>1.7.30</version>
         </dependency>
         <dependency>
