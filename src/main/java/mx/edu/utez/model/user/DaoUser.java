@@ -16,23 +16,25 @@ public class DaoUser {
     private ResultSet rs;
     final private Logger CONSOLE = LoggerFactory.getLogger(DaoUser.class);
 
-    public boolean createSession(String email, String password){
+
+    public boolean createSession(String email, String password) {
         boolean flag = false;
-        try{
-            con = ConnectionMySQL.getConnection();
-            cstm = con.prepareCall("SELECT * FROM user WHERE email = ? AND password = ?");
+        try {
+            ConnectionMySQL.getConnection();
+            cstm = con.prepareCall("{select* from user where email = ? and password = ?}");
             cstm.setString(1, email);
             cstm.setString(2, password);
             rs = cstm.executeQuery();
 
-            if(rs.next()){
+            if (rs.next()) {
                 flag = true;
             }
-        }catch(SQLException e){
-            CONSOLE.error("Ha sucedido algún error: " + e.getMessage());
-        }finally{
+        } catch (SQLException e) {
+            CONSOLE.error("Ha sucedido el error: " + e.getMessage());
+        } finally {
             ConnectionMySQL.closeConnections(con, cstm, rs);
         }
         return flag;
     }
 }
+

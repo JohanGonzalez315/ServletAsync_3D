@@ -8,10 +8,10 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 
-@WebServlet(name = "ServletSession", urlPatterns = {"/login", "/logout"})
+@WebServlet(name = "ServletSession", urlPatterns = {"/loggin", "/logout"})
 public class ServletSession extends HttpServlet {
     /**
-     * Cierra la sesión del usuario logeado.
+     * Cierra la sesion del usuario
      * @param request
      * @param response
      * @throws ServletException
@@ -19,35 +19,32 @@ public class ServletSession extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Obteniendo la sesión
+//cerrar la sesion
         HttpSession session = request.getSession();
-        // matando la sesión
         session.setAttribute("session", null);
         session.invalidate();
-        //redirigiendo a "/"
-        request.getRequestDispatcher("/").forward(request, response);
+        request.getRequestDispatcher("/").forward(request,response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-
+        //Crear la sesion
         BeanUser beanUser = new BeanUser();
+        HttpSession session = request.getSession();
         DaoUser daoUser = new DaoUser();
 
         beanUser.setEmail(request.getParameter("email"));
         beanUser.setPassword(request.getParameter("password"));
-
         boolean flag = daoUser.createSession(
-            beanUser.getEmail(),
-            beanUser.getPassword()
+                beanUser.getEmail(),
+                beanUser.getPassword()
         );
 
         if(flag){
-            session.setAttribute("session", beanUser);
-            request.getRequestDispatcher("views/Inicio.jsp").forward(request, response);
-        } else {
-            request.getRequestDispatcher("/").forward(request, response);
+            session.setAttribute("session",beanUser);
+            request.getRequestDispatcher("/views/game/games.jsp").forward(request,response);
+        }else{
+            request.getRequestDispatcher("/").forward(request,response);
         }
     }
 }
