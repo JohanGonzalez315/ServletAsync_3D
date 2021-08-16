@@ -17,7 +17,7 @@
 </head>
 <body>
 <br>
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-plus"></i>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="btn-registar"><i class="fas fa-plus"></i>
     Agregar juego
 </button>
 <br>
@@ -43,7 +43,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="${context}/createGame" method="POST">
+                <form action="${context}/createGame" method="POST" id="registrarJuego">
                     <input type="hidden" value="create" name="action">
                     <label>Nombre del juego</label>
                     <input class="form-control" type="text" name="nombre"/>
@@ -60,6 +60,7 @@
                         <option value="0">Inactivo</option>
                     </select>
                     <br>
+                    <input type="hidden" name="action" value="create">
                     <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i> Agregar</button>
                 </form>
             </div>

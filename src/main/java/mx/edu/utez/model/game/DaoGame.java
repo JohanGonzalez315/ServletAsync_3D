@@ -56,7 +56,6 @@ public class DaoGame {
         try {
             con = ConnectionMySQL.getConnection();
             cstm = con.prepareCall("{call sp_createGame(?,?,?,?)}");
-
             cstm.setString(1, beanGame.getNameGame());
             cstm.setString(2, beanGame.getDatePremiere());
             cstm.setBlob(3, image);
@@ -68,7 +67,7 @@ public class DaoGame {
         return true;
     }
 
-    public boolean update(BeanGame beanGame){
+    public boolean update(BeanGame beanGame, InputStream image){
         boolean flag = false;
         try{
             BeanCategory beanCategory = new BeanCategory();
@@ -77,7 +76,7 @@ public class DaoGame {
             cstm.setInt(1, beanGame.getIdGame());
             cstm.setString(2, beanGame.getNameGame());
             //pendiente
-            cstm.setString(3, beanGame.getImgGame());
+            cstm.setBlob(3, image);
             cstm.setInt(4,beanCategory.getIdCategory());
             cstm.setString(5, beanGame.getDatePremiere());
             cstm.setInt(6, beanGame.getStatus());

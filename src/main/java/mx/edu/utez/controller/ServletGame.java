@@ -48,6 +48,7 @@ public class ServletGame extends HttpServlet {
 
         switch (action){
             case "create":
+
                 Part part = request.getPart("image");
                 InputStream image = part.getInputStream();
 
